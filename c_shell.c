@@ -108,9 +108,10 @@ int main(){
 }
 
 char *read_line(char *buf, size_t sz){
-	printf("> ");
+	char *curDir = getcwd(NULL,0);
+	printf("%s> ", curDir);
+	free(curDir);
 	return fgets(buf, sz, stdin);
-
 }
 
 void split(char *buf, char *split[], size_t max){
