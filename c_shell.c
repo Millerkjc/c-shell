@@ -13,6 +13,7 @@
 char *read_line(char *buf, size_t sz);
 void split(char *buf, char *split[], size_t max);
 void exit_builtin();
+void cd_builtin(char *path);
 
 int main(){
 	char str[LEN];
@@ -51,49 +52,51 @@ int main(){
 				}
 				free(arr);
 				exit_builtin();
-			}
+			}else if(!strcmp(arr[0],"cd")){
+				cd_builtin(arr[1]);
+			}else{
 
-			pid = fork();
-			if(pid<0){
-				printf("Cannot fork\n");
-				exit(1);
-			}
-
-			if(pid == 0){
-				prg = malloc(strlen(arr[0]) + 1);
-				if(prg == NULL){
-					fprintf(stderr,"2 prg malloc fails\n");
+				pid = fork();
+				if(pid<0){
+					printf("Cannot fork\n");
 					exit(1);
 				}
 
-				if(!strstr(arr[0],path)){
-					//buf = malloc(strlen(path) + strlen(arr[0]) + 1);
-					// error in strcat
-					buf = calloc(1, strlen(path) + strlen(arr[0]) + 1);
-					if(buf == NULL){
-						fprintf(stderr,"2 buf malloc fails\n");
-						free(prg);
+				if(pid == 0){
+					prg = malloc(strlen(arr[0]) + 1);
+					if(prg == NULL){
+						fprintf(stderr,"2 prg malloc fails\n");
 						exit(1);
 					}
-					strcpy(prg,arr[0]);
-					strcat(buf, path);
-					strcat(buf,arr[0]);
-					strcpy(arr[0],buf);
-					free(buf);
-				}
-				free(prg);
 
-				ret = execv(arr[0], arr);
-				if(ret == -1){
-					fprintf(stderr, "%s: %s\n", prg, strerror(errno));
-					exit(1);
-				}
+					if(!strstr(arr[0],path)){
+						//buf = malloc(strlen(path) + strlen(arr[0]) + 1);
+						// error in strcat
+						buf = calloc(1, strlen(path) + strlen(arr[0]) + 1);
+						if(buf == NULL){
+							fprintf(stderr,"2 buf malloc fails\n");
+							free(prg);
+							exit(1);
+						}
+						strcpy(prg,arr[0]);
+						strcat(buf, path);
+						strcat(buf,arr[0]);
+						strcpy(arr[0],buf);
+						free(buf);
+					}
+					free(prg);
 
-			}else{
-				wait(&status);
-				//printf("child exit code: %d\n", WEXITSTATUS(status));
+					ret = execv(arr[0], arr);
+					if(ret == -1){
+						fprintf(stderr, "%s: %s\n", prg, strerror(errno));
+						exit(1);
+					}
+
+				}else{
+					wait(&status);
+					//printf("child exit code: %d\n", WEXITSTATUS(status));
+				}
 			}
-
 			// ERRORE FREE
 			for(i=0;i<MAX_ARG;i++){
 				free(arr[i]);
@@ -136,4 +139,11 @@ void split(char *buf, char *split[], size_t max){
 void exit_builtin(){
 	printf("Exiting..\n");
 	exit(0);
+}
+
+void cd_builtin(char *path){
+	int ret =chdir(path);
+	if(ret==-1){
+		fprintf(stderr, "%s: %s\n", path, strerror(errno));
+	}
 }
