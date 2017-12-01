@@ -12,6 +12,7 @@
 
 char *read_line(char *buf, size_t sz);
 void split(char *buf, char *split[], size_t max);
+void exit_builtin();
 
 int main(){
 	char str[LEN];
@@ -19,6 +20,10 @@ int main(){
 	char *path="/bin/";
 	int i=0, pid, ret,status;
 	char *buf, *prg;
+
+	//char builtin = {&f1, &f2,...}
+	//char builtin = {&}
+	//void (*f_builtin)() = NULL;
 
 	while(read_line(str,LEN)!=NULL){
 		if(strcmp(str,"\n")){
@@ -45,7 +50,7 @@ int main(){
 					free(arr[i]);
 				}
 				free(arr);
-				break;
+				exit_builtin();
 			}
 
 			pid = fork();
@@ -121,4 +126,9 @@ void split(char *buf, char *split[], size_t max){
 		buf = strtok(NULL, s);
 	}
 	split[i]=NULL;
+}
+
+void exit_builtin(){
+	printf("Exiting..\n");
+	exit(0);
 }
