@@ -9,22 +9,32 @@
 #define LEN 80
 #define MAX_ARG 10
 #define LEN_ARG 10
+#define N_FUNC 2
+
+typedef struct{
+	char *name;
+	void (*f_builtin)();
+}func_dict;
 
 char *read_line(char *buf, size_t sz);
 void split(char *buf, char *split[], size_t max);
-void exit_builtin();
-void cd_builtin(char *path);
+int builtin_f(func_dict func_d[], char *str);
+void exit_builtin(char **arr);
+void cd_builtin(char **arr);
+//void cd_builtin(char *path);
 
 int main(){
 	char str[LEN];
 	char **arr;
 	char *path="/bin/";
 	int i=0, pid, ret,status;
+	int built_ret;
 	char *buf, *prg;
 
 	//char builtin = {&f1, &f2,...}
 	//char builtin = {&}
 	//void (*f_builtin)() = NULL;
+	func_dict func_d[N_FUNC] = {{"exit",&exit_builtin},{"cd",&cd_builtin}};
 
 	while(read_line(str,LEN)!=NULL){
 		if(strcmp(str,"\n")){
@@ -46,14 +56,11 @@ int main(){
 //			for(i=0;i<MAX_ARG && arr[i]!=NULL;i++){
 //				printf("%s ",arr[i]);
 //			}
-			if(!strcmp(arr[0],"exit")){
-				for(i=0;i<MAX_ARG;i++){
-					free(arr[i]);
-				}
-				free(arr);
-				exit_builtin();
-			}else if(!strcmp(arr[0],"cd")){
-				cd_builtin(arr[1]);
+
+			built_ret =builtin_f(func_d,arr[0]);
+			
+			if(built_ret!=-1){
+				func_d[built_ret].f_builtin(arr);
 			}else{
 
 				pid = fork();
@@ -136,12 +143,29 @@ void split(char *buf, char *split[], size_t max){
 	split[i]=NULL;
 }
 
-void exit_builtin(){
+int builtin_f(func_dict func_d[], char *str){
+	int i;
+	for(i=0;i<N_FUNC;i++){
+		if(!strcmp(func_d[i].name,str)){
+			return i;
+		}
+	}
+	return -1;
+}
+
+void exit_builtin(char **arr){
+	int i;
+	for(i=0;i<MAX_ARG;i++){
+		free(arr[i]);
+	}
+	free(arr);
 	printf("Exiting..\n");
 	exit(0);
 }
 
-void cd_builtin(char *path){
+//void cd_builtin(char *path){
+void cd_builtin(char **arr){
+	char *path = arr[1];
 	int ret =chdir(path);
 	if(ret==-1){
 		fprintf(stderr, "%s: %s\n", path, strerror(errno));
