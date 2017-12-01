@@ -109,6 +109,10 @@ int main(){
 
 char *read_line(char *buf, size_t sz){
 	char *curDir = getcwd(NULL,0);
+	if(!curDir){
+		fprintf(stderr, "getcwd: %s\n", strerror(errno));
+		exit(1);
+	}
 	printf("%s> ", curDir);
 	free(curDir);
 	return fgets(buf, sz, stdin);
