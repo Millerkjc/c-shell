@@ -101,6 +101,10 @@ int main(){
 
 				}else{
 					wait(&status);
+					//for & -> waitpid(pid, &status, WNOHANG);
+					//waitpid(0, &status, WNOHANG);
+					//waitpid - WNOHANG
+
 					//printf("child exit code: %d\n", WEXITSTATUS(status));
 				}
 			}
