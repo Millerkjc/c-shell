@@ -22,6 +22,7 @@ int builtin_f(func_dict func_d[], char *str);
 void exit_builtin(char **arr);
 void cd_builtin(char **arr);
 //void cd_builtin(char *path);
+int background(char **arr);
 
 int main(){
 	char str[LEN];
@@ -30,6 +31,7 @@ int main(){
 	int i=0, pid, ret,status;
 	int built_ret;
 	char *buf, *prg;
+	int bkgnd;
 
 	//char builtin = {&f1, &f2,...}
 	//char builtin = {&}
@@ -51,6 +53,7 @@ int main(){
 			}
 
 			split(str,arr,MAX_ARG);
+			bkgnd = background(arr);
 
 //			PRINT TEST
 //			for(i=0;i<MAX_ARG && arr[i]!=NULL;i++){
@@ -100,7 +103,11 @@ int main(){
 					}
 
 				}else{
-					wait(&status);
+					if(bkgnd!=-1){
+						waitpid(pid, &status, WNOHANG);
+					}else{
+						wait(&status);
+					}
 					//for & -> waitpid(pid, &status, WNOHANG);
 					//waitpid(0, &status, WNOHANG);
 					//waitpid - WNOHANG
@@ -174,4 +181,20 @@ void cd_builtin(char **arr){
 	if(ret==-1){
 		fprintf(stderr, "%s: %s\n", path, strerror(errno));
 	}
+}
+
+
+int background(char **arr){
+	int i;
+	for(i=1;arr[i]!=NULL && i<MAX_ARG;i++){
+		if(strstr(arr[i],"&")!=NULL){
+			arr[i][strlen(arr[i])-1]='\0';
+			printf("%s\n",arr[i]);
+			return i;
+		}else if(!strcmp(arr[i],"&")){
+			arr[i] = NULL;
+			return i;
+		}
+	}
+	return -1;
 }
