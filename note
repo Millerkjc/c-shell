@@ -1,0 +1,6 @@
+https://stackoverflow.com/questions/7171722/how-can-i-handle-sigchld-in-c/7171836#7171836
+https://stackoverflow.com/questions/14548367/using-waitpid-to-run-process-in-background
+https://stackoverflow.com/questions/12824848/placing-a-process-in-the-background-in-c
+
+http://voyager.deanza.edu/~perry/sigchld.html
+https://stackoverflow.com/questions/7155810/example-of-waitpid-wnohang-and-sigchld
