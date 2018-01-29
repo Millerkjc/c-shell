@@ -6,6 +6,9 @@
 #include <sys/types.h>
 #include <errno.h>
 
+//My library
+#include "builtin.h"
+
 #define LEN 80
 #define MAX_ARG 10
 #define LEN_ARG 10
@@ -20,7 +23,7 @@ char *read_line(char *buf, size_t sz);
 void split(char *buf, char *split[], size_t max);
 int builtin_f(func_dict func_d[], char *str);
 void exit_builtin(char **arr);
-void cd_builtin(char **arr);
+//void cd_builtin(char **arr);
 //void cd_builtin(char *path);
 int background(char **arr);
 void free_arr(char **arr);
@@ -177,6 +180,7 @@ void exit_builtin(char **arr){
 }
 
 //void cd_builtin(char *path){
+/*
 void cd_builtin(char **arr){
 	char *path = arr[1];
 	int ret =chdir(path);
@@ -184,7 +188,7 @@ void cd_builtin(char **arr){
 		fprintf(stderr, "%s: %s\n", path, strerror(errno));
 	}
 }
-
+*/
 
 int background(char **arr){
 	int i;
