@@ -21,7 +21,6 @@ typedef struct{
 }func_dict;
 
 int builtin_f(func_dict func_d[], char *str);
-void exit_builtin(char **arr);
 
 int main(){
 	char str[LEN];
@@ -135,14 +134,4 @@ int builtin_f(func_dict func_d[], char *str){
 		}
 	}
 	return -1;
-}
-
-void exit_builtin(char **arr){
-	int i;
-	for(i=0;i<MAX_ARG;i++){
-		free(arr[i]);
-	}
-	free(arr);
-	printf("Exiting..\n");
-	exit(0);
 }
