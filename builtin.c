@@ -4,6 +4,20 @@
 #include "builtin.h"
 
 #define MAX_ARG 10
+#define N_FUNC 2
+
+func_dict func_d[N_FUNC] = {{"exit",&exit_builtin},{"cd",&cd_builtin}};
+
+int builtin_f(func_dict func_d[], char *str){
+	int i;
+	for(i=0;i<N_FUNC;i++){
+		if(!strcmp(func_d[i].name,str)){
+			return i;
+		}
+	}
+	return -1;
+}
+
 
 void cd_builtin(char **arr){
 	char *path = arr[1];

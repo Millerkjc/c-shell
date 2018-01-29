@@ -13,14 +13,6 @@
 #define LEN 80
 #define MAX_ARG 10
 #define LEN_ARG 10
-#define N_FUNC 2
-
-typedef struct{
-	char *name;
-	void (*f_builtin)();
-}func_dict;
-
-int builtin_f(func_dict func_d[], char *str);
 
 int main(){
 	char str[LEN];
@@ -34,7 +26,7 @@ int main(){
 	//char builtin = {&f1, &f2,...}
 	//char builtin = {&}
 	//void (*f_builtin)() = NULL;
-	func_dict func_d[N_FUNC] = {{"exit",&exit_builtin},{"cd",&cd_builtin}};
+
 
 	while(read_line(str,LEN)!=NULL){
 		if(strcmp(str,"\n")){
@@ -124,14 +116,4 @@ int main(){
 	printf("Exiting..\n");
 
 	return 0;
-}
-
-int builtin_f(func_dict func_d[], char *str){
-	int i;
-	for(i=0;i<N_FUNC;i++){
-		if(!strcmp(func_d[i].name,str)){
-			return i;
-		}
-	}
-	return -1;
 }
