@@ -11,6 +11,7 @@
 #include "shell_utility.h"
 
 #define LEN 80
+#define MAX_ARG 10
 #define LEN_ARG 10
 #define N_FUNC 2
 
